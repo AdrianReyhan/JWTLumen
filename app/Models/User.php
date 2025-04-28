@@ -35,4 +35,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
         'api_token',
     ];
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
