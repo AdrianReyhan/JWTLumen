@@ -9,6 +9,7 @@ use Closure;
 class AuthenticateApiToken
 {
 
+    // menangani setiap permintaan yang datang dan memverifikasi token yang diberikan.
     public function handle($request, Closure $next)
     {
         // Ambil token dari header Authorization

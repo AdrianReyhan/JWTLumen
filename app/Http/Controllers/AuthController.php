@@ -23,7 +23,6 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        // Proses login jika validasi berhasil
         $validated = $validator->validated();
         $user = User::where('email', $validated['email'])->first();
 
@@ -42,27 +41,51 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'token' => $token,
-            'expires_at' => $tokenExpiration
+            'expired_at' => $tokenExpiration
         ]);
     }
 
-    public function verifyToken(Request $request)
+    public function logout(Request $request)
     {
+        // Mengambil token dari header Authorization
         $token = $request->header('Authorization');
 
         if (!$token) {
             return response()->json(['error' => 'Token is required'], 401);
         }
 
-        // Verifikasi token dan kedaluwarsa
+        // Menghapus "Bearer " dari token jika ada
+        $token = str_replace('Bearer ', '', $token);
+
+        // Mencari pengguna berdasarkan token yang diberikan
         $user = User::where('api_token', hash('sha256', $token))->first();
 
-        $now = Carbon::now('UTC');
-        // Gunakan Carbon untuk memeriksa apakah token sudah kedaluwarsa
-        if (!$user || $user->token_expiration < $now) {
-            return response()->json(['error' => 'Token expired or invalid'], 401);
+        if (!$user) {
+            return response()->json(['error' => 'Token not found'], 401);
         }
 
-        return response()->json(['message' => 'Token is valid']);
+        $user->api_token = null;  
+        $user->token_expiration = null; 
+        $user->save();
+
+        return response()->json(['message' => 'Successfully logged out']);
     }
+
+    // public function verifyToken(Request $request)
+    // {
+    //     $token = $request->header('Authorization');
+
+    //     if (!$token) {
+    //         return response()->json(['error' => 'Token is required'], 401);
+    //     }
+
+    //     $user = User::where('api_token', hash('sha256', $token))->first();
+
+    //     $now = Carbon::now('UTC');
+    //     if (!$user || $user->token_expiration < $now) {
+    //         return response()->json(['error' => 'Token expired or invalid'], 401);
+    //     }
+
+    //     return response()->json(['message' => 'Token is valid']);
+    // }
 }
