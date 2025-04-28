@@ -11,6 +11,32 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $validated = $validator->validated();
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User registered successfully',
+            'user' => $user
+        ], 201);
+    }
 
     public function login(Request $request)
     {
@@ -69,6 +95,33 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function me(Request $request)
+    {
+        $token = $request->header('Authorization');
+
+        if (!$token) {
+            return response()->json(['error' => 'Token is required'], 401);
+        }
+
+        $token = str_replace('Bearer ', '', $token);
+
+        $user = User::where('api_token', hash('sha256', $token))->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Invalid token'], 401);
+        }
+
+        $now = Carbon::now('UTC');
+        if ($user->token_expiration < $now) {
+            return response()->json(['error' => 'Token expired'], 401);
+        }
+
+        return response()->json([
+            'success' => true,
+            'user' => $user
+        ]);
     }
 
     // public function verifyToken(Request $request)
