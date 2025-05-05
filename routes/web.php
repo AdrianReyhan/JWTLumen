@@ -19,10 +19,12 @@ $router->get('/', function () use ($router) {
 
 $router->post('/login', 'AuthController@login');
 $router->post('/register', 'AuthController@register');
-$router->post('/me', 'AuthController@me');
-$router->post('/logout', 'AuthController@logout');
+
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
+    $router->post('/me', 'AuthController@me');
+    $router->post('/logout', 'AuthController@logout');
+
     $router->get('/users/all', 'UserController@index');
     $router->get('/users/{id}', 'UserController@show');
     $router->post('/users', 'UserController@store');

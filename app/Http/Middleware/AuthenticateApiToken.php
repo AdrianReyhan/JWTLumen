@@ -8,8 +8,15 @@ use Closure;
 
 class AuthenticateApiToken
 {
+    /**
+     * Handle an incoming request.
+     * //Memastikan semua request API membawa token yang valid sebelum lanjut ke controller.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
 
-    // menangani setiap permintaan yang datang dan memverifikasi token yang diberikan.
     public function handle($request, Closure $next)
     {
         // Ambil token dari header Authorization

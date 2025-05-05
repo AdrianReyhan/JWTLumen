@@ -72,6 +72,7 @@ $app->configure('app');
 |
 */
 
+// mendaftarkan middleware dengan nama auth
 // $app->middleware([
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
@@ -90,7 +91,9 @@ $app->routeMiddleware([
 | are used to bind services into the container. Service providers are
 | totally optional, so you are not required to uncomment this line.
 |
+// mendaftarkan AuthServiceProvider ke dalam aplikasi.
 */
+
 
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
