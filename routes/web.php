@@ -20,26 +20,54 @@ $router->get('/', function () use ($router) {
 $router->post('/login', 'AuthController@login');
 $router->post('/register', 'AuthController@register');
 
-
 $router->group(['middleware' => 'auth'], function () use ($router) {
+
+    // ADMIN GROUP
+    $router->group(['middleware' => 'admin', 'prefix' => 'admin'], function () use ($router) {
+        $router->get('/users/all', 'UserController@index');
+        $router->get('/users/{id}', 'UserController@show');
+        $router->post('/users', 'UserController@store');
+        $router->put('/users/{id}', 'UserController@update');
+        $router->delete('/users/{id}', 'UserController@destroy');
+
+        $router->get('/posts/all', 'PostsController@index');
+        $router->get('/posts/{id}', 'PostsController@show');
+        $router->post('/posts', 'PostsController@store');
+        $router->put('/posts/{id}', 'PostsController@update');
+        $router->delete('/posts/{id}', 'PostsController@destroy');
+
+        $router->get('/comments/all', 'CommentController@index');
+        $router->get('/comments/{id}', 'CommentController@show');
+        $router->post('/comments', 'CommentController@store');
+        $router->put('/comments/{id}', 'CommentController@update');
+        $router->delete('/comments/{id}', 'CommentController@destroy');
+    });
+
+    // PEMBACA GROUP
+    $router->group(['middleware' => 'pembaca', 'prefix' => 'pembaca'], function () use ($router) {
+        $router->get('/users/all', 'UserController@index');
+        $router->get('/users/{id}', 'UserController@show');
+
+        $router->get('/posts/all', 'PostsController@index');
+        $router->get('/posts/{id}', 'PostsController@show');
+
+        $router->get('/comments/all', 'CommentController@index');
+        $router->get('/comments/{id}', 'CommentController@show');
+    });
+
+    // PENULIS GROUP
+    $router->group(['middleware' => 'penulis', 'prefix' => 'penulis'], function () use ($router) {
+        $router->post('/users', 'UserController@store');
+        $router->put('/users/{id}', 'UserController@update');
+
+        $router->post('/posts', 'PostsController@store');
+        $router->put('/posts/{id}', 'PostsController@update');
+
+        $router->post('/comments', 'CommentController@store');
+        $router->put('/comments/{id}', 'CommentController@update');
+    });
+
     $router->post('/me', 'AuthController@me');
     $router->post('/logout', 'AuthController@logout');
 
-    $router->get('/users/all', 'UserController@index');
-    $router->get('/users/{id}', 'UserController@show');
-    $router->post('/users', 'UserController@store');
-    $router->put('/users/{id}', 'UserController@update');
-    $router->delete('/users/{id}', 'UserController@destroy');
-
-    $router->get('/posts/all', 'PostsController@index');
-    $router->post('/posts', 'PostsController@store');
-    $router->put('/posts/{id}', 'PostsController@update');
-    $router->get('/posts/{id}', 'PostsController@show');
-    $router->delete('/posts/{id}', 'PostsController@destroy');
-
-    $router->get('/comments/all', 'CommentController@index');
-    $router->get('/comments/{id}', 'CommentController@show');
-    $router->post('/comments', 'CommentController@store');
-    $router->put('/comments/{id}', 'CommentController@update');
-    $router->delete('/comments/{id}', 'CommentController@destroy');
 });

@@ -35,6 +35,7 @@ class AuthenticateApiToken
         if (!$user || $user->token_expiration < Carbon::now()) {
             return response()->json(['error' => 'Token expired or invalid'], 401);
         }
+        
 
         return $next($request);
     }

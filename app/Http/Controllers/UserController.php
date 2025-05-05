@@ -49,6 +49,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
+            'role' => 'required|in:admin,penulis,pembaca'
         ]);
 
         if ($validator->fails()) {
@@ -63,6 +64,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
 
         return response()->json([
@@ -79,6 +81,7 @@ class UserController extends Controller
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6',
+            'role' => 'nullable|in:admin,penulis,pembaca',
         ]);
 
         if ($validator->fails()) {
@@ -102,6 +105,9 @@ class UserController extends Controller
         $user->email = $request->has('email') ? $request->email : $user->email;
         if ($request->has('password')) {
             $user->password = Hash::make($request->password);
+        }
+        if ($request->has('role')) {
+            $user->role = $request->role;
         }
         $user->save();
 

@@ -80,6 +80,9 @@ $app->configure('app');
 $app->routeMiddleware([
     // 'auth' => App\Http\Middleware\Authenticate::class,
     'auth' => App\Http\Middleware\AuthenticateApiToken::class,
+    'admin' => App\Http\Middleware\CheckAdmin::class,
+    'penulis' => App\Http\Middleware\CheckPenulis::class,
+    'pembaca' => App\Http\Middleware\CheckPembaca::class,
 ]);
 
 /*
