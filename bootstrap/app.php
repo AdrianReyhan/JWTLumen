@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
     dirname(__DIR__)
@@ -79,10 +79,9 @@ $app->configure('app');
 
 $app->routeMiddleware([
     // 'auth' => App\Http\Middleware\Authenticate::class,
+    // 'admin' => App\Http\Middleware\CheckAdmin::class,
     'auth' => App\Http\Middleware\AuthenticateApiToken::class,
-    'admin' => App\Http\Middleware\CheckAdmin::class,
-    'penulis' => App\Http\Middleware\CheckPenulis::class,
-    'pembaca' => App\Http\Middleware\CheckPembaca::class,
+    'role' => App\Http\Middleware\Role::class,
 ]);
 
 /*
@@ -116,7 +115,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__ . '/../routes/web.php';
 });
 
 return $app;

@@ -20,10 +20,10 @@ $router->get('/', function () use ($router) {
 $router->post('/login', 'AuthController@login');
 $router->post('/register', 'AuthController@register');
 
-$router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'role'], function () use ($router) {
 
     // ADMIN GROUP
-    $router->group(['middleware' => 'admin', 'prefix' => 'admin'], function () use ($router) {
+    $router->group(['middleware' => 'role:admin'], function () use ($router) {
         $router->get('/users/all', 'UserController@index');
         $router->get('/users/{id}', 'UserController@show');
         $router->post('/users', 'UserController@store');
@@ -44,7 +44,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     });
 
     // PEMBACA GROUP
-    $router->group(['middleware' => 'pembaca', 'prefix' => 'pembaca'], function () use ($router) {
+    $router->group(['middleware' => 'role:pembaca'], function () use ($router) {
         $router->get('/users/all', 'UserController@index');
         $router->get('/users/{id}', 'UserController@show');
 
@@ -56,14 +56,22 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     });
 
     // PENULIS GROUP
-    $router->group(['middleware' => 'penulis', 'prefix' => 'penulis'], function () use ($router) {
+    $router->group(['middleware' => 'role:penulis'], function () use ($router) {
         $router->post('/users', 'UserController@store');
-        $router->put('/users/{id}', 'UserController@update');
-
+        
         $router->post('/posts', 'PostsController@store');
-        $router->put('/posts/{id}', 'PostsController@update');
 
         $router->post('/comments', 'CommentController@store');
+    }); 
+
+    // EDITOR GROUP
+    $router->group(['middleware' => 'role:editor'], function () use ($router) {
+        $router->put('/users/{id}', 'UserController@update');
+
+        $router->put('/posts/{id}', 'PostsController@update');
+
+        $router->put('/posts/{id}', 'PostsController@update');
+
         $router->put('/comments/{id}', 'CommentController@update');
     });
 
